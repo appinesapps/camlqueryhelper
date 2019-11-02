@@ -114,3 +114,54 @@ function getNestedQuery(obj,operator){
 }
 
 export default { getArrayOfQueries, getQueryElement, getNestedQuery,getQueryWrapped }
+
+
+
+
+let requestData = {
+  "query": {
+      "__metadata": {
+          "type": "SP.CamlQuery"
+      },
+      "ViewXml":"<View><Query><Where><Joins><Join Type='LEFT' ListAlias='JobOptionsList'><Eq><FieldRef Name='Title' RefType='Id' /><FieldRef List='JobOptionsList' Name='ID' /></Eq></Join><Join Type='LEFT' ListAlias='JobCompetencies'><Eq><FieldRef List='JobTitle' Name='JobTitle' RefType='Id' /><FieldRef List='JobCompetencies' Name='ID' /></Eq></Join></Joins></Where></Query></View>"
+  }
+},
+endpointUrl = "https://myconnect.gsk.com/sites/finance/capabilities/career-competency/_api/web/lists/getbytitle('JobCompetencies')/getItems"
+$.ajax({
+  url: endpointUrl,
+  type: "POST",
+  headers: {
+      "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+      "Accept": "application/json; odata=verbose",
+      "Content-Type": "application/json; odata=verbose"
+  },
+  dataType: "json",
+  data: JSON.stringify(requestData)
+}).then((res)=>{
+  console.log(res)
+})
+
+
+<ViewFields>
+  <FieldRef Name='ID'/>
+  <FieldRef Name='Title'/>
+</ViewFields> 
+<Joins>
+  <Join Type='LEFT' ListAlias='JobOptionsList'>
+    <Eq>
+      <FieldRef Name='Title' RefType='Id' />
+      <FieldRef List='JobOptionsList' Name='ID' />
+    </Eq>
+  </Join>
+  <Join Type='LEFT' ListAlias='JobCompetencies'>
+    <Eq>
+      <FieldRef List='JobOptionsList' Name='JobTitle' RefType='Id' />
+      <FieldRef List='JobCompetencies' Name='ID' />
+    </Eq>
+  </Join>
+</Joins>
+
+
+<View><ViewFields><FieldRef Name='ID'/><FieldRef Name='Title'/></ViewFields><Joins><Join Type='LEFT' ListAlias='JobOptionsList'><Eq><FieldRef Name='Title' RefType='Id' /><FieldRef List='JobOptionsList' Name='ID' /></Eq></Join><Join Type='LEFT' ListAlias='JobCompetencies'><Eq><FieldRef List='JobOptionsList' Name='JobTitle' RefType='Id' /><FieldRef List='JobCompetencies' Name='ID' /></Eq></Join></Joins><Query><Where><IsNotNull><FieldRef Name='ID' /></IsNotNull></Where></Query></View>
+
+<ViewFields><FieldRef Name='ID'/><FieldRef Name='Title'/></ViewFields><Joins><Join Type='LEFT' ListAlias='JobOptionsList'><Eq><FieldRef Name='Title' RefType='Id' /><FieldRef List='JobOptionsList' Name='ID' /></Eq></Join><Join Type='LEFT' ListAlias='JobCompetencies'><Eq><FieldRef List='JobTitle' Name='JobTitle' RefType='Id' /><FieldRef List='JobCompetencies' Name='ID' /></Eq></Join></Joins>

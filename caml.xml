@@ -1,0 +1,37 @@
+<View>
+  <ViewFields>
+    <FieldRef Name='ID'/>
+    <FieldRef Name='City'/>
+    <FieldRef Name='Country'/>
+    <FieldRef Name='CityName'/>
+  </ViewFields>
+  <Joins>
+    <Join Type='LEFT' ListAlias='TestBCity'>
+      <Eq>
+        <FieldRef Name='City' RefType='Id' />
+        <FieldRef List='TestBCity' Name='ID' />
+      </Eq>
+    </Join>
+  </Joins>
+  <ProjectedFields>
+    <Field 
+      ShowField='lq3m'
+      Type='Lookup' 
+      Name='Country'
+      List='TestBCity' 
+    />
+    <Field 
+      ShowField='Title'
+      Type='Lookup' 
+      Name='CityName'
+      List='TestBCity' 
+    />
+  </ProjectedFields>
+  <Query>
+    <Where>
+      <IsNotNull>
+        <FieldRef Name='ID' />
+      </IsNotNull>
+    </Where>
+  </Query>
+</View>
