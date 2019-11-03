@@ -1,4 +1,57 @@
 import forEach from 'lodash/forEach'
+import capitalizeFirstLetter from './lib/capitalizeFirstLetter'
+let caml_string,
+caml_start,
+caml_end,
+self_closing = ['FieldRef']
+
+
+function view(){
+  this.caml_start = '<View>'
+  this.caml_end = '</View>'
+  return this
+}
+function query(){
+  this.caml_start = '<Query>'
+  this.caml_end = '</Query>'
+  return this
+}
+function and(){
+  return this
+}
+
+function capitalizeTagDetails(key,value){
+  return capitalizeFirstLetter(key) + '=' + '"' + capitalizeFirstLetter(value) + '"' + ' '
+}
+function getTagOptions(options){
+  let tag_details
+  for (let key in options) {
+    if(tag_details){
+      tag_details += capitalizeTagDetails(key,options[key])
+    }else{
+      tag_details = capitalizeTagDetails(key,options[key])
+    }
+  }
+  return tag_details
+}
+function createTag(tag_name,options){
+  let tag_details,
+  tag
+
+  if(options){
+    tag_details = getTagOptions(options)
+    tag = '<' + tag_name + ' ' + tag_details
+  }else{
+    tag = '<' + tag_name
+  }
+
+  if(self_closing.indexOf(tag_name) > -1){
+    tag += '/>'
+  }else{
+    tag += '>'+'</' + tag_name + '>'
+  }
+  return tag
+}
 
 function getQueryElement(operator,field_name, field_type, value) {
   let start_operator = '<' + operator + '>',
@@ -113,10 +166,11 @@ function getNestedQuery(obj,operator){
   return query_string
 }
 
-export default { getArrayOfQueries, getQueryElement, getNestedQuery,getQueryWrapped }
+export default {caml_string,view,query,and,createTag}
+// export default { getArrayOfQueries, getQueryElement, getNestedQuery,getQueryWrapped }
 
 
-
+/*
 
 let requestData = {
   "query": {
@@ -140,8 +194,8 @@ $.ajax({
 }).then((res)=>{
   console.log(res)
 })
-
-
+*/
+/*
 <ViewFields>
   <FieldRef Name='ID'/>
   <FieldRef Name='Title'/>
@@ -165,3 +219,4 @@ $.ajax({
 <View><ViewFields><FieldRef Name='ID'/><FieldRef Name='Title'/></ViewFields><Joins><Join Type='LEFT' ListAlias='JobOptionsList'><Eq><FieldRef Name='Title' RefType='Id' /><FieldRef List='JobOptionsList' Name='ID' /></Eq></Join><Join Type='LEFT' ListAlias='JobCompetencies'><Eq><FieldRef List='JobOptionsList' Name='JobTitle' RefType='Id' /><FieldRef List='JobCompetencies' Name='ID' /></Eq></Join></Joins><Query><Where><IsNotNull><FieldRef Name='ID' /></IsNotNull></Where></Query></View>
 
 <ViewFields><FieldRef Name='ID'/><FieldRef Name='Title'/></ViewFields><Joins><Join Type='LEFT' ListAlias='JobOptionsList'><Eq><FieldRef Name='Title' RefType='Id' /><FieldRef List='JobOptionsList' Name='ID' /></Eq></Join><Join Type='LEFT' ListAlias='JobCompetencies'><Eq><FieldRef List='JobTitle' Name='JobTitle' RefType='Id' /><FieldRef List='JobCompetencies' Name='ID' /></Eq></Join></Joins>
+*/
